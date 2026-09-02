@@ -99,7 +99,7 @@
             color: inherit;
             font-size: inherit;
             resize: none;
-            overflow: hidden; /* Scroll barlarını KESİN GİZLER */
+            overflow: hidden;
             transition: border 0.2s, background 0.2s;
         }
 
@@ -109,7 +109,6 @@
             outline: none;
         }
 
-        /* Number oklarını gizleme */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -176,7 +175,7 @@
         
         td {
             border-bottom: 1px solid var(--border-color);
-            padding: 2px 5px; /* SATIR ARALIKLARI DARALTILDI */
+            padding: 4px 6px;
             vertical-align: middle;
         }
 
@@ -195,7 +194,7 @@
         .row-total-val { padding: 4px; display: block; }
 
         /* Toplamlar Bölümü */
-        .totals-wrapper { display: flex; justify-content: flex-end; margin-bottom: 40px; }
+        .totals-wrapper { display: flex; justify-content: flex-end; margin-bottom: 30px; }
         .totals-table { width: 300px; font-size: 14px; }
         .totals-table th, .totals-table td {
             background: transparent;
@@ -216,34 +215,60 @@
 
         /* Alt Bilgi / Notlar */
         .footer-section { font-size: 12px; color: var(--text-light); }
-        .footer-section h3 { font-size: 13px; color: var(--text-dark); margin: 0 0 5px 0; }
-
-        /* ========================================================= */
-        /* YAZDIRMA AYNASI (PDF HATASINI KÖKTEN ÇÖZEN MEKANİZMA)     */
-        /* ========================================================= */
-        .print-only { display: none; }
+        .footer-section h3 { font-size: 13px; color: var(--text-dark); margin: 0 0 5px 0; font-weight: 600;}
         
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            gap: 20px;
+            align-items: end;
+        }
+
+        .bank-info-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--primary); /* Mavi ince kibar çizgi */
+            text-align: center;
+        }
+
+        .bank-info-container h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .bank-info-container textarea {
+            text-align: center;
+            font-weight: 600;
+            height: 60px;
+        }
+        
+        .signature-box {
+            text-align: center;
+        }
+        
+        .signature-box p:first-child {
+            margin-bottom: 60px;
+            font-weight: 600;
+        }
+        
+        .signature-box p:last-child {
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin: 0 20px; /* Çizginin kenarlardan biraz içeride olması için */
+        }
+
+        /* Yazdırma Ayarları */
         @media print {
             body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: none; }
             .page { box-shadow: none; padding: 0; width: 100%; margin: 0; }
             .toolbar, .col-action, .currency-selector { display: none !important; }
             th { background-color: var(--primary) !important; color: white !important; }
-            
-            /* Tüm form alanlarını gizle */
-            input, textarea, select { display: none !important; }
-            
-            /* Sadece saf metin aynalarını göster */
-            .print-only { 
-                display: block !important; 
-                white-space: pre-wrap; 
-                word-break: break-word; 
-                padding: 4px;
-                color: var(--text-dark);
+            input, textarea { 
+                border: none !important; 
+                background: none !important; 
+                box-shadow: none !important; 
+                color: var(--text-dark) !important; /* Rakamların PDF'te görünür olmasını garanti eder */
             }
-            .print-only.price { text-align: right; }
-            .print-only.qty { text-align: center; }
-            span.print-only { display: inline-block !important; padding: 0; }
-            #vatRate + .print-only { display: inline !important; }
         }
     </style>
 </head>
@@ -267,7 +292,7 @@
             <div class="company-info">
                 <img src="logo.jpg" alt="Logo" class="company-logo" onerror="this.onerror=null; this.src='https://placehold.co/160x80/2563eb/white?text=LOGO+EKLENECEK';">
                 <textarea placeholder="Firma Unvanı ve İletişim Bilgileri">ÇÖZÜMDESK BİLİŞİM VE DANIŞMANLIK
-Karakaş Mh. Başaran Sitesi B Blok D:3 Merkez / KIRKLARELİ
+Karakaş Mh. Başaran Sitesi B Blok D:3 Merkez/KIRKLARELİ
 Tel: +90 539 946 9747 | info@cozumdesk.com</textarea>
             </div>
             <div class="quote-title">
@@ -336,24 +361,25 @@ Proje/Konu: </textarea>
         </div>
 
         <div class="footer-section">
-            <div style="display: flex; justify-content: space-between;">
-                <div style="width: 60%;">
+            <div class="footer-grid">
+                <div>
                     <h3>Notlar ve Şartlar</h3>
                     <textarea style="height: 100px; font-size: 12px;" placeholder="Teklif notlarınızı buraya yazabilirsiniz...">- İşbu teklif üzerindeki fiyatlar yukarıda belirtilen süre zarfında geçerlidir.
 - Fiyatlara aksi belirtilmedikçe KDV dahil değildir.
 - Ödeme Şekli: Fatura kesiminden itibaren 7 iş günü içinde banka havalesi.
 - Kurulum ve yerinde destek hizmetleri ayrıca ücretlendirilir.</textarea>
-                    
-                    <h3 style="margin-top: 15px;">Banka Hesap Bilgileri</h3>
-                    <textarea style="height: 60px; font-size: 12px; font-weight: 600;" placeholder="Banka bilgilerinizi giriniz...">Banka: X Bankası
-Alıcı: ÇözümDesk Yetkilisi
-IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
                 </div>
                 
-                <div style="width: 30%; text-align: center; padding-top: 20px;">
-                    <p style="margin-bottom: 50px;"><strong>Kaşe / İmza</strong></p>
-                    <p style="border-top: 1px solid #ccc; padding-top: 10px;">ÇözümDesk Yetkilisi</p>
+                <div class="signature-box">
+                    <p>Kaşe / İmza</p>
+                    <p>Mehmet TÜRK</p>
                 </div>
+            </div>
+            
+            <div class="bank-info-container">
+                <h3>Banka Hesap Bilgileri</h3>
+                <textarea placeholder="Banka bilgilerinizi giriniz...">Banka: Garanti Bankası | Alıcı: Mehmet TÜRK
+IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
             </div>
         </div>
 
@@ -367,7 +393,6 @@ IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
         document.addEventListener("DOMContentLoaded", function() {
             calculateTotals();
             document.querySelectorAll('textarea').forEach(el => autoResize(el));
-            syncPrintValues(); // Sayfa açılışında PDF aynasını hazırla
         });
         
         function changeCurrency() {
@@ -383,39 +408,22 @@ IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
             calculateTotals();
         }
 
-        // Otomatik Boyutlandırma
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = (textarea.scrollHeight) + 'px';
         }
 
-        // PDF İçin Yazdırma Aynası (Değerleri arka planda metne çevirir)
-        function syncPrintValues() {
-            document.querySelectorAll('input, textarea, select').forEach(el => {
-                let printEl = el.nextElementSibling;
-                if (!printEl || !printEl.classList.contains('print-only')) {
-                    printEl = document.createElement(el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' ? 'div' : 'span');
-                    printEl.className = 'print-only ' + el.className;
-                    el.parentNode.insertBefore(printEl, el.nextSibling);
-                }
-                if (el.tagName === 'SELECT') {
-                    printEl.textContent = el.options[el.selectedIndex].text;
-                } else {
-                    printEl.innerHTML = el.value.replace(/\n/g, '<br>');
-                }
-            });
-        }
-
-        // Her tuşa basıldığında aynayı güncelle
         document.addEventListener('input', function (event) {
             if (event.target.tagName.toLowerCase() === 'textarea') {
                 autoResize(event.target);
             }
-            syncPrintValues();
+            // PDF için değer sabitleme: Girilen her değeri input/textarea'nın value niteliğine yaz.
+            event.target.setAttribute('value', event.target.value);
+            if(event.target.tagName.toLowerCase() === 'textarea') {
+                event.target.textContent = event.target.value;
+            }
         }, false);
-        document.addEventListener('change', syncPrintValues);
 
-        // Satır İşlemleri
         function addRow() {
             const tbody = document.getElementById("tableBody");
             const tr = document.createElement("tr");
@@ -429,14 +437,12 @@ IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
             `;
             tbody.appendChild(tr);
             calculateTotals();
-            syncPrintValues();
         }
 
         function removeRow(button) {
             const row = button.closest("tr");
             row.remove();
             calculateTotals();
-            syncPrintValues();
         }
 
         function calculateTotals() {
@@ -452,6 +458,11 @@ IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
 
                 const qtyVal = qtyInput.value;
                 const priceVal = priceInput.value;
+                
+                // JS ile value attribute'unu güncelle (PDF görünürlüğü için)
+                qtyInput.setAttribute("value", qtyVal);
+                priceInput.setAttribute("value", priceVal);
+
                 const qty = parseFloat(qtyVal) || 0;
                 const price = parseFloat(priceVal) || 0;
                 
@@ -467,6 +478,7 @@ IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
 
             const vatInput = document.getElementById("vatRate");
             const vatRate = vatInput ? parseFloat(vatInput.value) || 0 : 0;
+            if(vatInput) vatInput.setAttribute("value", vatRate);
             
             const vatAmount = subtotal * (vatRate / 100);
             const grandTotal = subtotal + vatAmount;
