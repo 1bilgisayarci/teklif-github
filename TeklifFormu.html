@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÇözümDesk - Teklif Formu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-color: #f3f4f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Araç Çubuğu */
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .currency-selector {
+            background-color: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .currency-selector select {
+            padding: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background-color: #10b981; }
+        .btn-secondary:hover { background-color: #059669; }
+        .btn-danger { background-color: #ef4444; padding: 6px 10px; }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        /* A4 Sayfa Yapısı */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Ortak Input Stilleri */
+        input, textarea {
+            font-family: 'Inter', sans-serif;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            color: inherit;
+            font-size: inherit;
+            resize: none;
+            overflow: hidden; /* Scroll barlarını KESİN GİZLER */
+            transition: border 0.2s, background 0.2s;
+        }
+
+        input:hover, textarea:hover, input:focus, textarea:focus {
+            border: 1px dashed var(--border-color);
+            background: #f9fafb;
+            outline: none;
+        }
+
+        /* Number oklarını gizleme */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        /* Üst Başlık ve Logo */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+        }
+
+        .company-info { display: flex; flex-direction: column; gap: 5px; width: 45%; }
+        .company-logo {
+            max-width: 160px;
+            max-height: 80px;
+            object-fit: contain;
+            margin-bottom: 5px;
+            border: 1px dashed transparent;
+        }
+
+        .company-info textarea {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
+            font-weight: 500;
+            height: 80px;
+        }
+
+        .quote-title { text-align: right; }
+        .quote-title h2 { font-size: 28px; color: var(--text-dark); margin: 0 0 15px 0; letter-spacing: 2px; }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: auto 120px;
+            gap: 5px 15px;
+            font-size: 13px;
+            align-items: center;
+        }
+        
+        .meta-grid strong { text-align: right; color: var(--text-light); }
+
+        /* Müşteri Bilgileri */
+        .client-section { margin-bottom: 30px; display: flex; justify-content: space-between; gap: 40px; }
+        .client-box { flex: 1; }
+        .client-box h3 {
+            font-size: 14px;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        .client-box textarea { font-size: 14px; line-height: 1.5; height: 60px; font-weight: 500; }
+
+        /* E-Tablo / Fiyatlandırma Tablosu */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+        th { background-color: var(--primary); color: white; text-align: left; padding: 8px; font-weight: 600; }
+        
+        td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 2px 5px; /* SATIR ARALIKLARI DARALTILDI */
+            vertical-align: middle;
+        }
+
+        .col-desc { width: 45%; }
+        .col-qty { width: 10%; text-align: center; }
+        .col-price { width: 15%; text-align: right; }
+        .col-total { width: 20%; text-align: right; font-weight: 600; }
+        .col-action { width: 5%; text-align: center; }
+
+        th.col-qty, th.col-price, th.col-total { text-align: right; }
+        th.col-qty { text-align: center; }
+
+        td input.qty { text-align: center; }
+        td input.price { text-align: right; padding-right: 5px; }
+        
+        .row-total-val { padding: 4px; display: block; }
+
+        /* Toplamlar Bölümü */
+        .totals-wrapper { display: flex; justify-content: flex-end; margin-bottom: 40px; }
+        .totals-table { width: 300px; font-size: 14px; }
+        .totals-table th, .totals-table td {
+            background: transparent;
+            color: var(--text-dark);
+            padding: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .totals-table th { text-align: left; font-weight: 600; color: var(--text-light); }
+        .totals-table td { text-align: right; font-weight: 600; }
+        .totals-table tr.grand-total th, .totals-table tr.grand-total td {
+            color: var(--primary-dark);
+            font-size: 18px;
+            border-bottom: 2px solid var(--primary-dark);
+        }
+
+        .vat-input-wrapper { display: inline-flex; align-items: center; gap: 2px; }
+        .vat-input-wrapper input { width: 30px; text-align: right; padding: 0; font-weight: 600; color: inherit; }
+
+        /* Alt Bilgi / Notlar */
+        .footer-section { font-size: 12px; color: var(--text-light); }
+        .footer-section h3 { font-size: 13px; color: var(--text-dark); margin: 0 0 5px 0; }
+
+        /* ========================================================= */
+        /* YAZDIRMA AYNASI (PDF HATASINI KÖKTEN ÇÖZEN MEKANİZMA)     */
+        /* ========================================================= */
+        .print-only { display: none; }
+        
+        @media print {
+            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: none; }
+            .page { box-shadow: none; padding: 0; width: 100%; margin: 0; }
+            .toolbar, .col-action, .currency-selector { display: none !important; }
+            th { background-color: var(--primary) !important; color: white !important; }
+            
+            /* Tüm form alanlarını gizle */
+            input, textarea, select { display: none !important; }
+            
+            /* Sadece saf metin aynalarını göster */
+            .print-only { 
+                display: block !important; 
+                white-space: pre-wrap; 
+                word-break: break-word; 
+                padding: 4px;
+                color: var(--text-dark);
+            }
+            .print-only.price { text-align: right; }
+            .print-only.qty { text-align: center; }
+            span.print-only { display: inline-block !important; padding: 0; }
+            #vatRate + .print-only { display: inline !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar no-print">
+        <div class="currency-selector">
+            <label for="currencySelect">Para Birimi:</label>
+            <select id="currencySelect" onchange="changeCurrency()">
+                <option value="TRY">Türk Lirası (₺)</option>
+                <option value="USD">Amerikan Doları ($)</option>
+                <option value="EUR">Euro (€)</option>
+            </select>
+        </div>
+        <button class="btn" onclick="window.print()">🖨️ PDF Kaydet / Yazdır</button>
+        <button class="btn btn-secondary" onclick="addRow()">➕ Yeni Satır Ekle</button>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <div class="company-info">
+                <img src="logo.jpg" alt="Logo" class="company-logo" onerror="this.onerror=null; this.src='https://placehold.co/160x80/2563eb/white?text=LOGO+EKLENECEK';">
+                <textarea placeholder="Firma Unvanı ve İletişim Bilgileri">ÇÖZÜMDESK BİLİŞİM VE DANIŞMANLIK
+Karakaş Mh. Başaran Sitesi B Blok D:3 Merkez / KIRKLARELİ
+Tel: +90 539 946 9747 | info@cozumdesk.com</textarea>
+            </div>
+            <div class="quote-title">
+                <h2>TEKLİF FORMU</h2>
+                <div class="meta-grid">
+                    <strong>Teklif No:</strong>
+                    <input type="text" value="TKF-2026-001">
+                    
+                    <strong>Tarih:</strong>
+                    <input type="text" value="02.09.2026">
+                    
+                    <strong>Geçerlilik:</strong>
+                    <input type="text" value="15 Gün">
+                </div>
+            </div>
+        </div>
+
+        <div class="client-section">
+            <div class="client-box">
+                <h3>Müşteri / Kurum Bilgileri</h3>
+                <textarea placeholder="Müşteri Unvanı">MÜŞTERİ UNVANI</textarea>
+            </div>
+            <div class="client-box">
+                <h3>Proje / İlgili Kişi</h3>
+                <textarea placeholder="İlgili Kişi ve Proje Adı">İlgili Kişi: 
+Proje/Konu: </textarea>
+            </div>
+        </div>
+
+        <table id="invoiceTable">
+            <thead>
+                <tr>
+                    <th class="col-desc">Hizmet / Ürün Tanımı</th>
+                    <th class="col-qty">Miktar</th>
+                    <th class="col-price">Birim Fiyat (<span class="currency-symbol">₺</span>)</th>
+                    <th class="col-total">Toplam (<span class="currency-symbol">₺</span>)</th>
+                    <th class="col-action no-print"></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td><textarea class="desc" rows="1" placeholder="Ürün veya hizmet tanımı yazın..."></textarea></td>
+                    <td><input type="number" class="qty" value="1" min="1" step="0.5" oninput="calculateTotals()"></td>
+                    <td><input type="number" class="price" value="" min="0" step="1" oninput="calculateTotals()"></td>
+                    <td class="col-total"><span class="row-total-val">0.00</span></td>
+                    <td class="col-action no-print"><button class="btn btn-danger" onclick="removeRow(this)" title="Satırı Sil">X</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="totals-wrapper">
+            <table class="totals-table">
+                <tr>
+                    <th>Ara Toplam:</th>
+                    <td id="subtotalVal">0.00 ₺</td>
+                </tr>
+                <tr>
+                    <th>KDV (<div class="vat-input-wrapper">%<input type="number" id="vatRate" value="20" oninput="calculateTotals()"></div>):</th>
+                    <td id="vatVal">0.00 ₺</td>
+                </tr>
+                <tr class="grand-total">
+                    <th>GENEL TOPLAM:</th>
+                    <td id="grandTotalVal">0.00 ₺</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="footer-section">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 60%;">
+                    <h3>Notlar ve Şartlar</h3>
+                    <textarea style="height: 100px; font-size: 12px;" placeholder="Teklif notlarınızı buraya yazabilirsiniz...">- İşbu teklif üzerindeki fiyatlar yukarıda belirtilen süre zarfında geçerlidir.
+- Fiyatlara aksi belirtilmedikçe KDV dahil değildir.
+- Ödeme Şekli: Fatura kesiminden itibaren 7 iş günü içinde banka havalesi.
+- Kurulum ve yerinde destek hizmetleri ayrıca ücretlendirilir.</textarea>
+                    
+                    <h3 style="margin-top: 15px;">Banka Hesap Bilgileri</h3>
+                    <textarea style="height: 60px; font-size: 12px; font-weight: 600;" placeholder="Banka bilgilerinizi giriniz...">Banka: X Bankası
+Alıcı: ÇözümDesk Yetkilisi
+IBAN: TR00 0000 0000 0000 0000 0000 00</textarea>
+                </div>
+                
+                <div style="width: 30%; text-align: center; padding-top: 20px;">
+                    <p style="margin-bottom: 50px;"><strong>Kaşe / İmza</strong></p>
+                    <p style="border-top: 1px solid #ccc; padding-top: 10px;">ÇözümDesk Yetkilisi</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS Bölümü -->
+    <script>
+        let currentCurrency = "TRY";
+        let currencySymbol = "₺";
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            calculateTotals();
+            document.querySelectorAll('textarea').forEach(el => autoResize(el));
+            syncPrintValues(); // Sayfa açılışında PDF aynasını hazırla
+        });
+        
+        function changeCurrency() {
+            const select = document.getElementById("currencySelect");
+            currentCurrency = select.value;
+            
+            if (currentCurrency === "TRY") currencySymbol = "₺";
+            else if (currentCurrency === "USD") currencySymbol = "$";
+            else if (currentCurrency === "EUR") currencySymbol = "€";
+
+            const symbolSpans = document.querySelectorAll('.currency-symbol');
+            symbolSpans.forEach(span => { span.textContent = currencySymbol; });
+            calculateTotals();
+        }
+
+        // Otomatik Boyutlandırma
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+
+        // PDF İçin Yazdırma Aynası (Değerleri arka planda metne çevirir)
+        function syncPrintValues() {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                let printEl = el.nextElementSibling;
+                if (!printEl || !printEl.classList.contains('print-only')) {
+                    printEl = document.createElement(el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' ? 'div' : 'span');
+                    printEl.className = 'print-only ' + el.className;
+                    el.parentNode.insertBefore(printEl, el.nextSibling);
+                }
+                if (el.tagName === 'SELECT') {
+                    printEl.textContent = el.options[el.selectedIndex].text;
+                } else {
+                    printEl.innerHTML = el.value.replace(/\n/g, '<br>');
+                }
+            });
+        }
+
+        // Her tuşa basıldığında aynayı güncelle
+        document.addEventListener('input', function (event) {
+            if (event.target.tagName.toLowerCase() === 'textarea') {
+                autoResize(event.target);
+            }
+            syncPrintValues();
+        }, false);
+        document.addEventListener('change', syncPrintValues);
+
+        // Satır İşlemleri
+        function addRow() {
+            const tbody = document.getElementById("tableBody");
+            const tr = document.createElement("tr");
+            
+            tr.innerHTML = `
+                <td><textarea class="desc" rows="1" placeholder="Ürün veya hizmet tanımı yazın..."></textarea></td>
+                <td><input type="number" class="qty" value="1" min="1" step="0.5" oninput="calculateTotals()"></td>
+                <td><input type="number" class="price" value="" min="0" step="1" oninput="calculateTotals()"></td>
+                <td class="col-total"><span class="row-total-val">0.00</span></td>
+                <td class="col-action no-print"><button class="btn btn-danger" onclick="removeRow(this)" title="Satırı Sil">X</button></td>
+            `;
+            tbody.appendChild(tr);
+            calculateTotals();
+            syncPrintValues();
+        }
+
+        function removeRow(button) {
+            const row = button.closest("tr");
+            row.remove();
+            calculateTotals();
+            syncPrintValues();
+        }
+
+        function calculateTotals() {
+            let subtotal = 0;
+            const rows = document.querySelectorAll("#tableBody tr");
+
+            rows.forEach(row => {
+                const qtyInput = row.querySelector(".qty");
+                const priceInput = row.querySelector(".price");
+                const totalSpan = row.querySelector(".row-total-val");
+
+                if (!qtyInput || !priceInput || !totalSpan) return;
+
+                const qtyVal = qtyInput.value;
+                const priceVal = priceInput.value;
+                const qty = parseFloat(qtyVal) || 0;
+                const price = parseFloat(priceVal) || 0;
+                
+                const rowTotal = qty * price;
+                subtotal += rowTotal;
+
+                if(qtyVal !== "" && priceVal !== "") {
+                    totalSpan.textContent = formatMoney(rowTotal);
+                } else {
+                    totalSpan.textContent = "-";
+                }
+            });
+
+            const vatInput = document.getElementById("vatRate");
+            const vatRate = vatInput ? parseFloat(vatInput.value) || 0 : 0;
+            
+            const vatAmount = subtotal * (vatRate / 100);
+            const grandTotal = subtotal + vatAmount;
+
+            const subtotalEl = document.getElementById("subtotalVal");
+            const vatValEl = document.getElementById("vatVal");
+            const grandTotalEl = document.getElementById("grandTotalVal");
+
+            if (subtotalEl) subtotalEl.textContent = formatMoney(subtotal) + " " + currencySymbol;
+            if (vatValEl) vatValEl.textContent = formatMoney(vatAmount) + " " + currencySymbol;
+            if (grandTotalEl) grandTotalEl.textContent = formatMoney(grandTotal) + " " + currencySymbol;
+        }
+
+        function formatMoney(amount) {
+            let locale = 'tr-TR';
+            if(currentCurrency === 'USD') locale = 'en-US';
+            else if(currentCurrency === 'EUR') locale = 'de-DE';
+            return amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+    </script>
+</body>
+</html>
